@@ -23,9 +23,42 @@ export const main = async (canvas: HTMLCanvasElement) => {
   });
   console.log("WebGPU context configured");
 
+  // Create the vertices of a cube as a Float32Array
   const vertices = new Float32Array([
-    //   X,    Y,
-    -0.8, -0.8, 0.8, -0.8, 0.8, 0.8, -0.8, 0.8,
+    // front
+    -0.5,
+    -0.5,
+    0.5,
+    1.0,
+    0.5,
+    -0.5,
+    0.5,
+    1.0,
+    0.5,
+    0.5,
+    0.5,
+    1.0,
+    -0.5,
+    0.5,
+    0.5,
+    1.0,
+    // back
+    -0.5,
+    -0.5,
+    -0.5,
+    1.0,
+    0.5,
+    -0.5,
+    -0.5,
+    1.0,
+    0.5,
+    0.5,
+    -0.5,
+    1.0,
+    -0.5,
+    0.5,
+    -0.5,
+    1.0,
   ]);
 
   const indices = new Uint32Array([0, 1, 2, 2, 3, 0]);

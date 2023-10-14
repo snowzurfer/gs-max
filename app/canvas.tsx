@@ -1,6 +1,6 @@
 "use client";
 
-import { main } from "@/lib/main";
+import { main } from "@/lib/shadertoy_02";
 import { useLayoutEffect, useRef } from "react";
 
 export const Canvas = () => {
