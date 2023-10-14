@@ -1,7 +1,6 @@
 import fullScreenWGSL from "@/lib/shaders/fullscreen.wgsl";
 import toyWGSL from "@/lib/shaders/toy.wgsl";
 
-
 export const main = async (canvas: HTMLCanvasElement) => {
   if (!navigator.gpu) throw new Error("WebGPU not supported on this browser.");
 
@@ -13,6 +12,22 @@ export const main = async (canvas: HTMLCanvasElement) => {
   if (!context)
     throw new Error("Couldn't get the WebGPU context from the canvas");
 
+  const devicePixelRatio = window.devicePixelRatio || 1;
+  const presentationSize = [
+    Math.floor(canvas.clientWidth * devicePixelRatio),
+    Math.floor(canvas.clientHeight * devicePixelRatio),
+  ];
+
+  canvas.width = presentationSize[0];
+  canvas.height = presentationSize[1];
+  console.log(
+    "Canvas size: ",
+    canvas.width,
+    canvas.height,
+    canvas.clientWidth,
+    canvas.clientHeight
+  );
+
   const presentationFormat = navigator.gpu.getPreferredCanvasFormat();
   context.configure({
     device,
@@ -21,11 +36,20 @@ export const main = async (canvas: HTMLCanvasElement) => {
 
   // Create a texture that's the same size as the canvas target
   const textureSize = {
-    width: canvas.width,
-    height: canvas.height,
+    width: presentationSize[0],
+    height: presentationSize[1],
   };
 
-  console.log("WebGPU presentation format", presentationFormat);
+  console.log(
+    "WebGPU presentation format",
+    presentationFormat,
+    "texture size",
+    textureSize,
+    "devicePixelRatio",
+    devicePixelRatio,
+    "presentationSize",
+    presentationSize
+  );
 
   const computeBindGroupLayout = device.createBindGroupLayout({
     entries: [
@@ -59,22 +83,22 @@ export const main = async (canvas: HTMLCanvasElement) => {
     };
    */
   const computeParamsBuffer = device.createBuffer({
-    // iTime: f32 (4 bytes)
     // iResolution: vec3f (4 * 3 bytes)
+    // iTime: f32 (4 bytes)
     size: 4 + 4 * 3,
-    mappedAtCreation: true,
-    usage: GPUBufferUsage.UNIFORM,
+    usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
   });
 
   // Write a phony time value to the buffer, but real resolution of the canvas
-  new Float32Array(computeParamsBuffer.getMappedRange()).set([
-    0.0,
-    textureSize.width,
-    textureSize.height,
-    1.0,
-  ]);
+  const paramsBufferArray = new Float32Array(4);
+  paramsBufferArray[0] = textureSize.width;
+  paramsBufferArray[1] = textureSize.height;
+  paramsBufferArray[2] = 1.0;
+  paramsBufferArray[3] = 0.0;
 
-  computeParamsBuffer.unmap();
+  device.queue.writeBuffer(computeParamsBuffer, 0, paramsBufferArray);
+
+  console.log("textureSize", textureSize);
 
   const computeOutputTexture = device.createTexture({
     size: textureSize,
@@ -177,38 +201,56 @@ export const main = async (canvas: HTMLCanvasElement) => {
     z: 1,
   };
 
-  const encoder = device.createCommandEncoder();
-
-  const computePass = encoder.beginComputePass();
-  computePass.setPipeline(computePipeline);
-  computePass.setBindGroup(0, computeBindGroup);
-
-  computePass.dispatchWorkgroups(
-    computeWorkItems.x,
-    computeWorkItems.y,
-    computeWorkItems.z
-  );
-
-  computePass.end();
-
-  const pass = encoder.beginRenderPass({
-    colorAttachments: [
-      {
-        view: context.getCurrentTexture().createView(),
-        loadOp: "clear" as GPULoadOp,
-        clearValue: { r: 0.0, g: 0.0, b: 0.1, a: 1.0 },
-        storeOp: "store" as GPUStoreOp,
-      },
-    ],
-  });
-
-  pass.setPipeline(fullScreenQuadPipeline);
-  pass.setBindGroup(0, showResultBindGroup);
-  pass.draw(6);
-
-  pass.end();
-
-  device.queue.submit([encoder.finish()]);
-
   console.log("WebGPU command buffer submitted");
+
+  // Animate!
+  const timeStart = performance.now() / 1000;
+  const frame = () => {
+    // Update the time value
+    const time = performance.now() / 1000 - timeStart;
+
+    const uniformTypedArray = new Float32Array([time]);
+    device.queue.writeBuffer(
+      computeParamsBuffer,
+      3 * 4,
+      uniformTypedArray.buffer
+    );
+
+    const encoder = device.createCommandEncoder();
+
+    const computePass = encoder.beginComputePass();
+    computePass.setPipeline(computePipeline);
+    computePass.setBindGroup(0, computeBindGroup);
+
+    computePass.dispatchWorkgroups(
+      computeWorkItems.x,
+      computeWorkItems.y,
+      computeWorkItems.z
+    );
+
+    computePass.end();
+
+    const pass = encoder.beginRenderPass({
+      colorAttachments: [
+        {
+          view: context.getCurrentTexture().createView(),
+          loadOp: "clear" as GPULoadOp,
+          clearValue: { r: 0.0, g: 0.0, b: 0.1, a: 1.0 },
+          storeOp: "store" as GPUStoreOp,
+        },
+      ],
+    });
+
+    pass.setPipeline(fullScreenQuadPipeline);
+    pass.setBindGroup(0, showResultBindGroup);
+    pass.draw(6);
+
+    pass.end();
+
+    device.queue.submit([encoder.finish()]);
+
+    requestAnimationFrame(frame);
+  };
+
+  requestAnimationFrame(frame);
 };
