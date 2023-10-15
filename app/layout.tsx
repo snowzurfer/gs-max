@@ -16,7 +16,9 @@ export const RootLayout = ({ children }: { children: React.ReactNode }) => {
       <body
         className={cn(
           inter.className,
-          "flex h-screen flex-col items-center justify-center"
+          "flex h-screen flex-col items-center justify-center",
+          "bg-gradient-to-br from-white to-gray-300",
+          "dark:bg-gradient-to-br dark:from-slate-900 dark:to-slate-800"
         )}
       >
         {children}

@@ -27,6 +27,8 @@ export class WebGPURenderer {
   private showResultBindGroupLayout: GPUBindGroupLayout;
   private showResultPipeline?: GPURenderPipeline;
 
+  private pause = true;
+
   constructor(canvas: HTMLCanvasElement, device: GPUDevice) {
     this.canvas = canvas;
     this.device = device;
@@ -180,6 +182,7 @@ export class WebGPURenderer {
     if (!showResultBindGroup)
       throw new Error("Show result bind group not initialized");
 
+    this.pause = false;
     // Logic to start the rendering/animation loop, might use requestAnimationFrame...
     const timeStart = performance.now() / 1000;
     const frame = () => {
@@ -227,13 +230,18 @@ export class WebGPURenderer {
       device.queue.submit([encoder.finish()]);
 
       console.log("Rendered frame");
+
+      if (this.pause) return;
+
       requestAnimationFrame(frame);
     };
+
     requestAnimationFrame(frame);
   }
 
   stopRendering() {
     // Logic to stop the rendering/animation loop, if necessary...
+    this.pause = true;
   }
 
   resizeCanvas() {

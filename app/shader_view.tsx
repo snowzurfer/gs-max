@@ -1,13 +1,24 @@
 "use client";
 
+import { cn } from "@/lib/utils";
 import { WebGPURenderer } from "@/lib/webgpu_renderer";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import {
+  ComponentPropsWithoutRef,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 
-interface ShaderViewProps {
+interface ShaderViewProps extends ComponentPropsWithoutRef<"div"> {
   shaderCode: string;
 }
 
-export const ShaderView = ({ shaderCode }: ShaderViewProps) => {
+export const ShaderView = ({
+  shaderCode,
+  className,
+  ...props
+}: ShaderViewProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const webGPURenderer = useRef<WebGPURenderer | null>(null);
 
@@ -44,11 +55,6 @@ export const ShaderView = ({ shaderCode }: ShaderViewProps) => {
     webGPURenderer.current = renderer;
     webGPURenderer.current.setShader(shaderCode);
     webGPURenderer.current.resizeCanvas();
-    // renderer.start();
-
-    // return () => {
-    //   renderer.stop();
-    // };
 
     webGPURenderer.current.startRendering();
   }, [gpuDevice]);
@@ -56,10 +62,15 @@ export const ShaderView = ({ shaderCode }: ShaderViewProps) => {
   useEffect(() => {
     if (!webGPURenderer.current) return;
 
-    console.log("Shader code changed");
-
+    webGPURenderer.current.stopRendering();
     webGPURenderer.current.setShader(shaderCode);
+    webGPURenderer.current.startRendering();
+    console.log("Shader code changed");
   }, [shaderCode]);
 
-  return <canvas className="w-full h-full" ref={canvasRef} />;
+  return (
+    <div className={cn(className)} {...props}>
+      <canvas className="w-full h-full" ref={canvasRef} />
+    </div>
+  );
 };

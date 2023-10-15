@@ -9,15 +9,18 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@webgpu/types": "^0.1.37",
+    "@uiw/react-codemirror": "^4.21.20",
     "clsx": "^2.0.0",
     "gl-matrix": "^3.4.3",
+    "lodash": "^4.17.21",
     "next": "13.5.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "tailwind-merge": "^1.14.0"
   },
   "devDependencies": {
+    "@webgpu/types": "^0.1.37",
+    "@types/lodash": "^4.14.199",
     "@types/node": "^20.8.3",
     "@types/react": "^18.2.25",
     "@types/react-dom": "^18.2.11",
