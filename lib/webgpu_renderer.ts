@@ -229,8 +229,6 @@ export class WebGPURenderer {
 
       device.queue.submit([encoder.finish()]);
 
-      console.log("Rendered frame");
-
       if (this.pause) return;
 
       requestAnimationFrame(frame);

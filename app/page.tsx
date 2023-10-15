@@ -8,6 +8,7 @@ import { throttle } from "lodash";
 
 export const Home = () => {
   const [shaderCode, setShaderCode] = useState(simple_plasma);
+  const [showEditor, setShowEditor] = useState(true);
 
   // Using useRef to create a mutable object which holds the throttled function.
   // This object will persist for the full lifetime of the component.
@@ -32,20 +33,46 @@ export const Home = () => {
   }, []);
 
   return (
-    <div className="flex lg:gap-x-12 items-center">
-      <ShaderView
-        shaderCode={shaderCode}
-        className="max-w-xl w-full aspect-square shadow-xl"
-      />
+    <div className="flex flex-col min-h-screen">
+      <div className="flex-grow flex flex-col lg:flex-row lg:gap-x-12 items-center justify-center">
+        <div className="flex flex-col max-w-xl shadow-xl">
+          <ShaderView
+            shaderCode={shaderCode}
+            className="max-w-xl w-full aspect-square"
+          />
+          {!showEditor && (
+            <button onClick={() => setShowEditor((show) => !show)}>
+              show 👁️
+            </button>
+          )}
+        </div>
 
-      <div className="max-w-xl shadow-xl">
-        <CodeEditor
-          initialCode={shaderCode}
-          onChange={(value) => {
-            throttledOnChangeRef.current(value);
-          }}
-        />
+        {showEditor && (
+          <div className="flex flex-col max-w-xl shadow-xl">
+            <CodeEditor
+              initialCode={shaderCode}
+              onChange={(value) => {
+                throttledOnChangeRef.current(value);
+              }}
+            />
+            <button onClick={() => setShowEditor((show) => !show)}>
+              hide 👁️
+            </button>
+          </div>
+        )}
       </div>
+      <footer className="h-12 flex items-center justify-center">
+        <span>
+          by{" "}
+          <a
+            href="https://albertotaiuti.com"
+            className="text-blue-500 hover:underline focus:outline-none focus:border-b-2 focus:border-blue-500 active:text-blue-700"
+          >
+            Alberto Taiuti
+          </a>
+          - v0.1
+        </span>
+      </footer>
     </div>
   );
 };

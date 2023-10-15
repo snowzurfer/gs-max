@@ -25,12 +25,13 @@ export const ShaderView = ({
   const [gpuDevice, setGPUDevice] = useState<GPUDevice | null>(null);
 
   useLayoutEffect(() => {
-    console.log("Canvas mounted");
     const canvas = canvasRef.current;
     if (!canvas) throw new Error("Canvas not found but must be present here!");
 
     // Get the GPU device
     const loadDevice = async () => {
+      if (!navigator.gpu) throw Error("WebGPU not supported.");
+
       const adapter = await navigator.gpu.requestAdapter();
       if (!adapter) throw new Error("No appropriate GPUAdapter found.");
 
@@ -43,10 +44,7 @@ export const ShaderView = ({
   }, []);
 
   useEffect(() => {
-    console.log("GPU device changed");
     if (!gpuDevice) return;
-
-    console.log("GPU device loaded");
 
     const canvas = canvasRef.current;
     if (!canvas) throw new Error("Canvas not found but must be present here!");
@@ -65,7 +63,6 @@ export const ShaderView = ({
     webGPURenderer.current.stopRendering();
     webGPURenderer.current.setShader(shaderCode);
     webGPURenderer.current.startRendering();
-    console.log("Shader code changed");
   }, [shaderCode]);
 
   return (
