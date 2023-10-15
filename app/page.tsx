@@ -1,6 +1,6 @@
 import { Editor } from "./editor";
 
-export const Home = () => {
+const Home = () => {
   return <Editor />;
 };
 
