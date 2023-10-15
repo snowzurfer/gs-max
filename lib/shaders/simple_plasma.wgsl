@@ -7,7 +7,6 @@ struct Params {
 @group(0) @binding(1) var outputTex: texture_storage_2d<rgba8unorm, write>;
 
 // Adapted from https://www.shadertoy.com/view/ldBGRR
-// https://www.shadertoy.com/view/tsKSzR
 @compute @workgroup_size(8, 8)
 fn main(@builtin(global_invocation_id) global_id: vec3u) {
     let p = vec2(-1.0 + 2.0 * f32(global_id.x) / params.iResolution.x, -1.0 + 2.0 * f32(global_id.y) / params.iResolution.y);
@@ -25,3 +24,5 @@ fn main(@builtin(global_invocation_id) global_id: vec3u) {
     let uv = vec2u(global_id.x, global_id.y);
     textureStore(outputTex, uv, fragColor);
 }
+
+// Adapted from https://www.shadertoy.com/view/tsKSzR

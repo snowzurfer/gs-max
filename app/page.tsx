@@ -1,7 +1,8 @@
-import { Canvas } from "./canvas";
+import { ShaderView } from "./shader_view";
+import simple_plasma from "@/lib/shaders/simple_plasma.wgsl";
 
 export const Home = () => {
-  return <Canvas />;
+  return <ShaderView shaderCode={simple_plasma} />;
 };
 
 export default Home;
