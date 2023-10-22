@@ -4,6 +4,7 @@ import { ShaderView } from "./shader_view";
 import simple_plasma from "@/lib/shaders/simple_plasma.wgsl";
 import lava from "@/lib/shaders/lava.wgsl";
 import pinku from "@/lib/shaders/pinku.wgsl";
+import ellipse_2d_distance from "@/lib/shaders/ellipse_2d_distance.wgsl";
 import { CodeEditor } from "./code_editor";
 import { useEffect, useRef, useState } from "react";
 import { throttle } from "lodash";
@@ -20,6 +21,10 @@ const shaders = [
   {
     name: "lava",
     code: lava,
+  },
+  {
+    name: "ellipse 2d distance",
+    code: ellipse_2d_distance,
   },
 ];
 
