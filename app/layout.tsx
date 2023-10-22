@@ -18,7 +18,7 @@ export const RootLayout = ({ children }: { children: React.ReactNode }) => {
         className={cn(
           inter.className,
           "flex h-screen flex-col items-center justify-center",
-          "bg-gradient-to-br from-white to-gray-300",
+          "bg-gradient-to-br from-white to-gray-100",
           "dark:bg-gradient-to-br dark:from-slate-900 dark:to-slate-800"
         )}
       >

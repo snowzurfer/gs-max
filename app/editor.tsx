@@ -2,15 +2,34 @@
 
 import { ShaderView } from "./shader_view";
 import simple_plasma from "@/lib/shaders/simple_plasma.wgsl";
-import synth_wave from "@/lib/shaders/synth_wave.wgsl";
 import lava from "@/lib/shaders/lava.wgsl";
+import pinku from "@/lib/shaders/pinku.wgsl";
 import { CodeEditor } from "./code_editor";
 import { useEffect, useRef, useState } from "react";
 import { throttle } from "lodash";
 
+const shaders = [
+  {
+    name: "simple plasma",
+    code: simple_plasma,
+  },
+  {
+    name: "pinku",
+    code: pinku,
+  },
+  {
+    name: "lava",
+    code: lava,
+  },
+];
+
+const buttonClassName =
+  "hover:bg-gray-400 active:bg-gray-500 dark:hover:bg-gray-600 dark:active:bg-gray-500";
+
 export const Editor = () => {
-  const [shaderCode, setShaderCode] = useState(lava);
+  const [shaderCode, setShaderCode] = useState(pinku);
   const [showEditor, setShowEditor] = useState(true);
+  const [showSelectShader, setShowSelectShader] = useState(false);
 
   // Using useRef to create a mutable object which holds the throttled function.
   // This object will persist for the full lifetime of the component.
@@ -43,23 +62,69 @@ export const Editor = () => {
             className="max-w-xl w-full aspect-square"
           />
           {!showEditor && (
-            <button onClick={() => setShowEditor((show) => !show)}>
+            <button
+              onClick={() => setShowEditor((show) => !show)}
+              className={buttonClassName}
+            >
               <span className="text-gray-900 dark:text-gray-100">show 👁️</span>
             </button>
           )}
         </div>
 
         {showEditor && (
-          <div className="flex flex-col max-w-xl shadow-xl">
-            <CodeEditor
-              initialCode={shaderCode}
-              onChange={(value) => {
-                throttledOnChangeRef.current(value);
-              }}
-            />
-            <button onClick={() => setShowEditor((show) => !show)}>
-              <span className="text-gray-900 dark:text-gray-100">hide 👁️</span>
-            </button>
+          <div className="flex flex-col shadow-xl grow max-w-xl">
+            {showSelectShader && (
+              <div className="flex flex-col gap-y-2 w-full">
+                {shaders.map((shader) => (
+                  <button
+                    key={shader.name}
+                    onClick={() => {
+                      setShaderCode(shader.code);
+                      setShowSelectShader(false);
+                    }}
+                    className={buttonClassName}
+                  >
+                    <span className="text-gray-900 dark:text-gray-100">
+                      {shader.name}
+                    </span>
+                  </button>
+                ))}
+                <button
+                  onClick={() => setShowSelectShader(false)}
+                  className="bg-gray-300 hover:bg-gray-400 active:bg-gray-500 dark:bg-gray-700 dark:hover:bg-gray-600 dark:active:bg-gray-500"
+                >
+                  <span className="text-gray-900 dark:text-gray-100">
+                    cancel
+                  </span>
+                </button>
+              </div>
+            )}
+            {!showSelectShader && (
+              <>
+                <CodeEditor
+                  initialCode={shaderCode}
+                  onChange={(value) => {
+                    throttledOnChangeRef.current(value);
+                  }}
+                />
+                <button
+                  onClick={() => setShowEditor((show) => !show)}
+                  className={buttonClassName}
+                >
+                  <span className="text-gray-900 dark:text-gray-100">
+                    hide 👁️
+                  </span>
+                </button>
+                <button
+                  onClick={() => setShowSelectShader(true)}
+                  className={buttonClassName}
+                >
+                  <span className="text-gray-900 dark:text-gray-100">
+                    pick shader️
+                  </span>
+                </button>
+              </>
+            )}
           </div>
         )}
       </div>
