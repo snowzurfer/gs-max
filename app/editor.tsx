@@ -7,6 +7,7 @@ import pinku from "@/lib/shaders/pinku.wgsl";
 import ellipse_2d_distance from "@/lib/shaders/ellipse_2d_distance.wgsl";
 import star_guy from "@/lib/shaders/star_guy.wgsl";
 import ovanova_blu_color from "@/lib/shaders/ovanova_blu_color.wgsl";
+import rainbow_dna from "@/lib/shaders/rainbow_dna.wgsl";
 import { CodeEditor } from "./code_editor";
 import { useEffect, useRef, useState } from "react";
 import { throttle } from "lodash";
@@ -36,13 +37,17 @@ const shaders = [
     name: "ovanova blu color",
     code: ovanova_blu_color,
   },
+  {
+    name: "rainwbow dna",
+    code: rainbow_dna,
+  },
 ];
 
 const buttonClassName =
   "hover:bg-gray-400 active:bg-gray-500 dark:hover:bg-gray-600 dark:active:bg-gray-500";
 
 export const Editor = () => {
-  const [shaderCode, setShaderCode] = useState(ovanova_blu_color);
+  const [shaderCode, setShaderCode] = useState(rainbow_dna);
   const [showEditor, setShowEditor] = useState(true);
   const [showSelectShader, setShowSelectShader] = useState(false);
 
