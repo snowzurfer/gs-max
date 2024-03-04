@@ -55,7 +55,7 @@ export const ShaderView = ({
     webGPURenderer.current.resizeCanvas();
 
     webGPURenderer.current.startRendering();
-  }, [gpuDevice]);
+  }, [gpuDevice, shaderCode]);
 
   useEffect(() => {
     if (!webGPURenderer.current) return;

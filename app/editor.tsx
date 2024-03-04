@@ -9,6 +9,7 @@ import star_guy from "@/lib/shaders/star_guy.wgsl";
 import ovanova_blu_color from "@/lib/shaders/ovanova_blu_color.wgsl";
 import rainbow_dna from "@/lib/shaders/rainbow_dna.wgsl";
 import origami from "@/lib/shaders/origami.wgsl";
+import warp from "@/lib/shaders/warp.wgsl";
 import { CodeEditor } from "./code_editor";
 import { useEffect, useRef, useState } from "react";
 import { throttle } from "lodash";
@@ -46,13 +47,17 @@ const shaders = [
     name: "origami",
     code: origami,
   },
+  {
+    name: "warp",
+    code: warp,
+  },
 ];
 
 const buttonClassName =
   "hover:bg-gray-400 active:bg-gray-500 dark:hover:bg-gray-600 dark:active:bg-gray-500";
 
 export const Editor = () => {
-  const [shaderCode, setShaderCode] = useState(origami);
+  const [shaderCode, setShaderCode] = useState(warp);
   const [showEditor, setShowEditor] = useState(true);
   const [showSelectShader, setShowSelectShader] = useState(false);
 
