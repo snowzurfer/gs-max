@@ -10,6 +10,7 @@ import ovanova_blu_color from "@/lib/shaders/ovanova_blu_color.wgsl";
 import rainbow_dna from "@/lib/shaders/rainbow_dna.wgsl";
 import origami from "@/lib/shaders/origami.wgsl";
 import warp from "@/lib/shaders/warp.wgsl";
+import distanceMergingTheory from "@/lib/shaders/DistanceMergingTheory.wgsl";
 import { CodeEditor } from "./code_editor";
 import { useEffect, useRef, useState } from "react";
 import { throttle } from "lodash";
@@ -50,6 +51,10 @@ const shaders = [
   {
     name: "warp",
     code: warp,
+  },
+  {
+    name: "distance merging theory",
+    code: distanceMergingTheory,
   },
 ];
 
